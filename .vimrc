@@ -253,6 +253,9 @@ Bundle 'tpope/vim-fugitive'
 "Air-line
 Bundle 'bling/vim-airline'
 
+"Tabulation
+Bundle 'godlygeek/tabular'
+
 "Hex highlighing
 "undle 'skammer/vim-css-color'
 
