@@ -74,7 +74,7 @@ set cursorline
 "--------------
 
 "Bind NERDTree file explorer to q
-nnoremap q :NERDTree<CR>
+nnoremap q :NERDTreeTabsToggle<CR>
 
 "C++11 is cool yo
 let g:syntastic_cpp_compiler_options = ' -std=c++11'
@@ -129,6 +129,22 @@ set t_Co=256
 "colors molokai
 colors darkai
 
+"Airline config
+set laststatus=2 "always on
+let g:airline_theme="jellybeans"
+"Install powerline fonts if this doesn't work right
+if !exists('g:airline_symbols')
+    let g:airline_symbols = {}
+endif
+let g:airline_inactive_collapse=1
+let g:airline_left_sep = ''
+let g:airline_left_alt_sep = ''
+let g:airline_right_sep = ''
+let g:airline_symbols.branch = ''
+let g:airline_symbols.readonly = ''
+let g:airline_symbols.whitespace = 'Ξ'
+let g:airline_symbols.linenr = ''
+
 "--------------------
 "Tabs and shiz
 "--------------------
@@ -149,6 +165,27 @@ set autoindent "Auto indent
 "set wrap "Wrap line
 set nowrap
 
+"--------------------
+" Misc mapping
+"--------------------
+command! W w
+"strip trailing whitespace on save
+autocmd FileType c,cpp,javascript,python autocmd BufWritePre <buffer> :%s/\s\+$//e
+
+nnoremap <silent><F8> :call QuickFixToggle()<CR>
+
+let g:quickfix_is_open = 0
+function! QuickFixToggle()
+    if g:quickfix_is_open
+        cclose
+        let g:quickfix_is_open = 0
+    else
+        copen
+        let g:quickfix_is_open = 1
+    endif
+endfunction
+
+map <C-F5> :tab split<CR>:exec("make")<Bar> cw<CR>
 
 "--------------------
 "VUNDLE
@@ -180,6 +217,10 @@ Bundle "garbas/vim-snipmate"
 
 "NERD Tree
 Bundle 'scrooloose/nerdtree'
+Bundle 'jistr/vim-nerdtree-tabs'
+
+"The Silver Searcher
+Bundle 'rking/ag.vim'
 
 "Sumblime style multiple-cursors
 Bundle 'terryma/vim-multiple-cursors'
@@ -203,9 +244,24 @@ Bundle 'kien/ctrlp.vim'
 "Syntastic Syntax checking
 Bundle 'scrooloose/syntastic'
 
+"MakeShift auto build detection
+Bundle 'johnsyweb/vim-makeshift'
+
+"Git wrapper
+Bundle 'tpope/vim-fugitive'
+
+"Air-line
+Bundle 'bling/vim-airline'
+
+"Tabulation
+Bundle 'godlygeek/tabular'
+
+"Hex highlighing
+"undle 'skammer/vim-css-color'
+
 
 "CoffeeScript
-Bundle 'kchmck/vim-coffee-script'
+"Bundle 'kchmck/vim-coffee-script'
 
 filetype on
 
@@ -220,11 +276,14 @@ au BufNewFile,BufRead *.cpp,*.h,*.hpp,*.c set tags+=~/.vim/tags/cpp
 au BufNewFile,BufRead *.cpp,*.h,*.hpp,*.c set tags+=~/.vim/tags/qt4
 au BufNewFile,BufRead *.py set tags+=~/.vim/tags/python
 " build tags of your own project with Ctrl-F12
-map <C-F12> :!ctags -R --exclude=*/venv/* --sort=yes --c++-kinds=+p --python-kinds=-i --fields=+iaS --extra=+q .<CR> 
+map <C-F12> :!ctags -R --exclude=*/venv/* --sort=yes --c++-kinds=+p --python-kinds=-i --fields=+iaS --extra=+q --languages=-javascript,tex .<CR>
 "Find tags
 map <F12> :tab split<CR>:exec("tag ".expand("<cword>"))<CR>
+map <S-F12> :tab split<CR>:exec("grep -R \'\\b".expand("<cword>")."\\b\' ./ --include=\*.{cpp,h,c,hpp}")<Bar> cw<CR>
 
-map<C-F11> :! find "$PWD" -type d <bar> awk '{print "-I" $0}' > syntastic_conf<CR> :let g:syntastic_cpp_config_file = 'syntastic_conf'<CR>
+" Load syntastic conf
+map<C-F11> :! find -name '*.h' -printf '\%h\n' <bar> sort -u <bar> awk '{print "-I" $0}' > syntastic_conf<CR> :let g:syntastic_cpp_config_file = 'syntastic_conf'<CR>
+
 
 " OmniCppComplete
 let OmniCpp_NamespaceSearch = 1

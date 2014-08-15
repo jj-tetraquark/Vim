@@ -138,7 +138,7 @@ if &t_Co > 255
    hi Folded          ctermfg=73  ctermbg=16
    hi Function        ctermfg=71
    hi Identifier      ctermfg=221               cterm=none
-   hi Ignore          ctermfg=244 ctermbg=232
+   hi Ignore          ctermfg=244 ctermbg=233
    hi IncSearch       ctermfg=193 ctermbg=16
 
    hi Keyword         ctermfg=166               cterm=bold
@@ -157,9 +157,9 @@ if &t_Co > 255
    hi PmenuSbar                   ctermbg=232
    hi PmenuThumb      ctermfg=81
 
-   hi TabLine       ctermbg=232 ctermfg=59 cterm=none
+   hi TabLine       ctermbg=233 ctermfg=59 cterm=none
    hi TabLineSel    ctermbg=233 cterm=bold
-   hi TabLineFill   ctermbg=232 ctermfg=232
+   hi TabLineFill   ctermbg=233 ctermfg=233
 
    hi PreCondit       ctermfg=71               cterm=bold
    hi PreProc         ctermfg=71
@@ -171,7 +171,7 @@ if &t_Co > 255
    hi SignColumn      ctermfg=71 ctermbg=235
    hi SpecialChar     ctermfg=223               cterm=bold
    hi SpecialComment  ctermfg=245               cterm=bold
-   hi Special         ctermfg=81  ctermbg=232
+   hi Special         ctermfg=81  ctermbg=233
 
    " this, return, continue
    hi Statement       ctermfg=131               
