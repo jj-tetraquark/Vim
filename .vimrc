@@ -74,11 +74,11 @@ set cursorline
 "--------------
 
 "Bind NERDTree file explorer to q
-nnoremap q :NERDTree<CR>
+nnoremap q :NERDTreeTabsToggle<CR>
 
 "C++11 is cool yo
 let g:syntastic_cpp_compiler_options = ' -std=c++11'
-let g:syntastic_cpp_config = 'syntastic_conf'
+let g:syntastic_cpp_config_file = 'syntastic_conf'
 let c_no_curly_error=1
 
 "------------------------
@@ -129,6 +129,22 @@ set t_Co=256
 "colors molokai
 colors darkai
 
+"Airline config
+set laststatus=2 "always on
+let g:airline_theme="jellybeans"
+"Install powerline fonts if this doesn't work right
+if !exists('g:airline_symbols')
+    let g:airline_symbols = {}
+endif
+let g:airline_inactive_collapse=1
+let g:airline_left_sep = ''
+let g:airline_left_alt_sep = ''
+let g:airline_right_sep = ''
+let g:airline_symbols.branch = ''
+let g:airline_symbols.readonly = ''
+let g:airline_symbols.whitespace = 'Ξ'
+let g:airline_symbols.linenr = ''
+
 "--------------------
 "Tabs and shiz
 "--------------------
@@ -152,7 +168,9 @@ set nowrap
 "--------------------
 " Misc mapping
 "--------------------
-command W w
+command! W w
+"strip trailing whitespace on save
+autocmd FileType c,cpp,javascript,python autocmd BufWritePre <buffer> :%s/\s\+$//e
 
 nnoremap <silent><F8> :call QuickFixToggle()<CR>
 
@@ -199,6 +217,7 @@ Bundle "garbas/vim-snipmate"
 
 "NERD Tree
 Bundle 'scrooloose/nerdtree'
+Bundle 'jistr/vim-nerdtree-tabs'
 
 "The Silver Searcher
 Bundle 'rking/ag.vim'
@@ -228,8 +247,14 @@ Bundle 'scrooloose/syntastic'
 "MakeShift auto build detection
 Bundle 'johnsyweb/vim-makeshift'
 
+"Git wrapper
+Bundle 'tpope/vim-fugitive'
+
+"Air-line
+Bundle 'bling/vim-airline'
+
 "Hex highlighing
-"Bundle 'skammer/vim-css-color'
+"undle 'skammer/vim-css-color'
 
 
 "CoffeeScript
@@ -247,13 +272,13 @@ filetype on
 set tags+=~/.vim/tags/cpp
 set tags+=~/.vim/tags/qt4
 " build tags of your own project with Ctrl-F12
-map <C-F12> :!ctags -R --exclude=*/venv/* --sort=yes --c++-kinds=+p --python-kinds=-i --fields=+iaS --extra=+q .<CR> 
+map <C-F12> :!ctags -R --exclude=*/venv/* --sort=yes --c++-kinds=+p --python-kinds=-i --fields=+iaS --extra=+q --languages=-javascript,tex .<CR>
 "Find tags
 map <F12> :tab split<CR>:exec("tag ".expand("<cword>"))<CR>
 map <S-F12> :tab split<CR>:exec("grep -R \'\\b".expand("<cword>")."\\b\' ./ --include=\*.{cpp,h,c,hpp}")<Bar> cw<CR>
 
 " Load syntastic conf
-map<C-F11> :! find "$PWD" -type d <bar> awk '{print "-I" $0}' > syntastic_conf<CR> :let g:syntastic_cpp_config_file = 'syntastic_conf'<CR>
+map<C-F11> :! find -name '*.h' -printf '\%h\n' <bar> sort -u <bar> awk '{print "-I" $0}' > syntastic_conf<CR> :let g:syntastic_cpp_config_file = 'syntastic_conf'<CR>
 
 
 " OmniCppComplete
