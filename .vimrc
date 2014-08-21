@@ -43,6 +43,8 @@ set ruler
 "ignore case while searching
 set ignorecase
 set smartcase
+"incremental search
+set incsearch
 
 "map highlight clear to double-Esc
 map <Esc><Esc> :nohl<CR>
@@ -55,6 +57,7 @@ map <c-k> <c-w>k<c-w>_
 map - <C-W><
 map + <C-W>>
 
+set showcmd
 
 "regex
 set magic
@@ -131,7 +134,8 @@ colors darkai
 
 "Airline config
 set laststatus=2 "always on
-let g:airline_theme="jellybeans"
+let g:airline_theme="zenburn"
+
 "Install powerline fonts if this doesn't work right
 if !exists('g:airline_symbols')
     let g:airline_symbols = {}
@@ -164,6 +168,9 @@ nnoremap tc :tabclose<CR>
 set autoindent "Auto indent
 "set wrap "Wrap line
 set nowrap
+
+"Tabulate C++ declarations
+nnoremap <leader>= :Tabularize /\S\+;<CR>
 
 "--------------------
 " Misc mapping
@@ -237,10 +244,6 @@ Bundle 'vim-scripts/a.vim'
 "Ctrl-P fuzzy finding
 Bundle 'kien/ctrlp.vim'
 
-"EasyTags
-"Bundle 'xolox/vim-misc'
-"Bundle 'xolox/vim-easytags'
-
 "Syntastic Syntax checking
 Bundle 'scrooloose/syntastic'
 
@@ -249,6 +252,9 @@ Bundle 'johnsyweb/vim-makeshift'
 
 "Git wrapper
 Bundle 'tpope/vim-fugitive'
+
+"Background tasks
+Bundle 'tpope/vim-dispatch'
 
 "Air-line
 Bundle 'bling/vim-airline'
