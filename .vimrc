@@ -50,10 +50,10 @@ set incsearch
 map <Esc><Esc> :nohl<CR>
 
 "Easy window movement
-map <c-l> <c-w>l<c-w>_
-map <c-h> <c-w>h<c-w>_
-map <c-j> <c-w>j<c-w>_
-map <c-k> <c-w>k<c-w>_
+map <c-l> <c-w>l
+map <c-h> <c-w>h
+map <c-j> <c-w>j
+map <c-k> <c-w>k
 map - <C-W><
 map + <C-W>>
 
@@ -284,10 +284,20 @@ set tags+=~/.vim/tags/qt4
 map <C-F12> :!ctags -R --exclude=*/venv/* --sort=yes --c++-kinds=+p --python-kinds=-i --fields=+iaS --extra=+q --languages=-javascript,tex .<CR>
 "Find tags
 map <F12> :tab split<CR>:exec("tag ".expand("<cword>"))<CR>
-map <S-F12> :tab split<CR>:exec("grep -R \'\\b".expand("<cword>")."\\b\' ./ --include=\*.{cpp,h,c,hpp}")<Bar> cw<CR>
+
+map <S-F12> :exec("grep! -R \'\\b".expand("<cword>")."\\b\' ./ --include=\*.{cpp,h,c,hpp}")<Bar> cw<CR> 
 
 " Load syntastic conf
 map<C-F11> :! find -name '*.h' -printf '\%h\n' <bar> sort -u <bar> awk '{print "-I" $0}' > syntastic_conf<CR> :let g:syntastic_cpp_config_file = 'syntastic_conf'<CR>
+
+"tmux bindings
+map [24;2~ <S-F12>
+map [24;5~ <C-F12>
+map [23;5~ <C-F11>
+
+nnoremap } :pop<CR>
+
+nnoremap <leader>] :ptag<CR>
 
 
 " OmniCppComplete
@@ -302,3 +312,13 @@ let OmniCpp_DefaultNamespaces = ["std", "_GLIBCXX_STD"]
 " automatically open and close the popup menu / preview window
 au CursorMovedI,InsertLeave * if pumvisible() == 0|silent! pclose|endif
 set completeopt=menuone,menu,longest,preview
+
+"AVIM
+
+" make h<->hpp work
+let g:alternateExtensions_hpp='c,cpp,h'
+let g:alternateExtensions_h='c,cpp,cxx,cc,CC,hpp'
+" stop auto-creating files if they don't exist
+let g:alternateNoDefaultAlternate = 1
+let g:alternateRelativeFiles = 1 " make files relative to cwd
+let g:alternateSearchPath = "sfr:../source,sfr:../src,sfr:../include,sfr:../inc,sfr:../,sfr:src/"
