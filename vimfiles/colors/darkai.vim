@@ -1,7 +1,6 @@
 " Vim color file
 "
 " Author: Jonathan Dark <jonny@jonnydark.com>
-"
 " Note: Based on the molokai theme for Vim by
 " Tomas Restrepo with elements of zenburn and
 " flatland.

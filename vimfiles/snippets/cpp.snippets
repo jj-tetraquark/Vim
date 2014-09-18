@@ -1,8 +1,7 @@
 # Read File Into Vector
 snippet readfile
 	std::vector<char> v;
-	if (FILE *${2:fp} = fopen(${1:"filename"}, "r")) 
-	{
+	if (FILE *${2:fp} = fopen(${1:"filename"}, "r")) {
 		char buf[1024];
 		while (size_t len = fread(buf, 1, sizeof(buf), $2))
 			v.insert(v.end(), buf, buf + len);
@@ -17,23 +16,23 @@ snippet vector
 	std::vector<${1:char}> v${2};
 # Namespace
 snippet ns
-	namespace ${1:`Filename('', 'my')`} {
+	namespace ${1:`Filename('', 'my')`} 
+	{
 		${2}
 	} /* $1 */
 #c++11 ranged for
 snippet fore
-	for (${1:auto} ${2:element} : ${3:range})
-	{
+	for (${1:auto} ${2:element} : ${3:range}) {
 		${4}
 	}
 # Class
 snippet class
 	class ${1:`Filename('$1_t', 'name')`} 
 	{
-	public:
-		$1(${2:arguments});
-		~$1() {}
+		public:
+			$1(${2:arguments});
+			~$1() {}
 
-	private:
-		${3:/* data */}
+		private:
+			${3:/* data */}
 	};
