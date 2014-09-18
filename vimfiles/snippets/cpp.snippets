@@ -22,17 +22,18 @@ snippet ns
 	} /* $1 */
 #c++11 ranged for
 snippet fore
-	for (${1:auto} ${2:element} : ${3:range}) {
+	for (${1:auto} ${2:element} : ${3:range}) 
+	{
 		${4}
 	}
 # Class
 snippet class
 	class ${1:`Filename('$1_t', 'name')`} 
 	{
-		public:
-			$1(${2:arguments});
-			~$1() {}
+	public:
+		$1(${2:arguments});
+		~$1() {}
 
-		private:
-			${3:/* data */}
+	private:
+		${3:/* data */}
 	};
