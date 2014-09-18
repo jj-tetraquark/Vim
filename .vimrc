@@ -43,18 +43,21 @@ set ruler
 "ignore case while searching
 set ignorecase
 set smartcase
+"incremental search
+set incsearch
 
 "map highlight clear to double-Esc
 map <Esc><Esc> :nohl<CR>
 
 "Easy window movement
-map <c-l> <c-w>l<c-w>_
-map <c-h> <c-w>h<c-w>_
-map <c-j> <c-w>j<c-w>_
-map <c-k> <c-w>k<c-w>_
+map <c-l> <c-w>l
+map <c-h> <c-w>h
+map <c-j> <c-w>j
+map <c-k> <c-w>k
 map - <C-W><
 map + <C-W>>
 
+set showcmd
 
 "regex
 set magic
@@ -131,7 +134,8 @@ colors darkai
 
 "Airline config
 set laststatus=2 "always on
-let g:airline_theme="jellybeans"
+let g:airline_theme="zenburn"
+
 "Install powerline fonts if this doesn't work right
 if !exists('g:airline_symbols')
     let g:airline_symbols = {}
@@ -164,6 +168,9 @@ nnoremap tc :tabclose<CR>
 set autoindent "Auto indent
 "set wrap "Wrap line
 set nowrap
+
+"Tabulate C++ declarations
+nnoremap <leader>= :Tabularize /\S\+;<CR>
 
 "--------------------
 " Misc mapping
@@ -237,10 +244,6 @@ Bundle 'vim-scripts/a.vim'
 "Ctrl-P fuzzy finding
 Bundle 'kien/ctrlp.vim'
 
-"EasyTags
-"Bundle 'xolox/vim-misc'
-"Bundle 'xolox/vim-easytags'
-
 "Syntastic Syntax checking
 Bundle 'scrooloose/syntastic'
 
@@ -249,6 +252,9 @@ Bundle 'johnsyweb/vim-makeshift'
 
 "Git wrapper
 Bundle 'tpope/vim-fugitive'
+
+"Background tasks
+Bundle 'tpope/vim-dispatch'
 
 "Air-line
 Bundle 'bling/vim-airline'
@@ -279,10 +285,20 @@ au BufNewFile,BufRead *.py set tags+=~/.vim/tags/python
 map <C-F12> :!ctags -R --exclude=*/venv/* --sort=yes --c++-kinds=+p --python-kinds=-i --fields=+iaS --extra=+q --languages=-javascript,tex .<CR>
 "Find tags
 map <F12> :tab split<CR>:exec("tag ".expand("<cword>"))<CR>
-map <S-F12> :tab split<CR>:exec("grep -R \'\\b".expand("<cword>")."\\b\' ./ --include=\*.{cpp,h,c,hpp}")<Bar> cw<CR>
+
+map <S-F12> :exec("grep! -R \'\\b".expand("<cword>")."\\b\' ./ --include=\*.{cpp,h,c,hpp}")<Bar> cw<CR> 
 
 " Load syntastic conf
 map<C-F11> :! find -name '*.h' -printf '\%h\n' <bar> sort -u <bar> awk '{print "-I" $0}' > syntastic_conf<CR> :let g:syntastic_cpp_config_file = 'syntastic_conf'<CR>
+
+"tmux bindings
+map [24;2~ <S-F12>
+map [24;5~ <C-F12>
+map [23;5~ <C-F11>
+
+nnoremap } :pop<CR>
+
+nnoremap <leader>] :ptag<CR>
 
 
 " OmniCppComplete
@@ -297,3 +313,13 @@ let OmniCpp_DefaultNamespaces = ["std", "_GLIBCXX_STD"]
 " automatically open and close the popup menu / preview window
 au CursorMovedI,InsertLeave * if pumvisible() == 0|silent! pclose|endif
 set completeopt=menuone,menu,longest,preview
+
+"AVIM
+
+" make h<->hpp work
+let g:alternateExtensions_hpp='c,cpp,h'
+let g:alternateExtensions_h='c,cpp,cxx,cc,CC,hpp'
+" stop auto-creating files if they don't exist
+let g:alternateNoDefaultAlternate = 1
+let g:alternateRelativeFiles = 1 " make files relative to cwd
+let g:alternateSearchPath = "sfr:../source,sfr:../src,sfr:../include,sfr:../inc,sfr:../,sfr:src/"

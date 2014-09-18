@@ -1,9 +1,10 @@
 " Vim color file
 "
 " Author: Jonathan Dark <jonny@jonnydark.com>
-"
-" Note: Based on the molokai theme by Tomas Restrepo
-" And the Flatland Dark theme for Sublime Text 2 by Joel Fillmore
+" Note: Based on the molokai theme for Vim by
+" Tomas Restrepo with elements of zenburn and
+" flatland.
+" Currently only a terminal theme, GUI needs doing at some point
 "
 
 hi clear
@@ -180,7 +181,7 @@ if &t_Co > 255
    hi StorageClass    ctermfg=221
    hi Structure       ctermfg=73  cterm=bold
    hi Tag             ctermfg=166
-   hi Title           ctermfg=166
+   hi Title           ctermfg=67
    hi Todo            ctermfg=65 ctermbg=233   cterm=bold
 
    hi Typedef         ctermfg=73
