@@ -106,6 +106,9 @@ vnoremap <F9> zf
 nnoremap <C-F9> zR
 nnoremap <M-F9> zM
 
+"tmux
+map [20;5~ <C-F9>
+
 "Map recording to z instead of q
 nnoremap z q
 
@@ -175,7 +178,12 @@ nnoremap <leader>= :Tabularize /\S\+;<CR>
 "--------------------
 " Misc mapping
 "--------------------
+
+"Fat-finger syndrome
+command! Cn cn
+command! Cp cp
 command! W w
+
 "strip trailing whitespace on save
 autocmd FileType c,cpp,javascript,python autocmd BufWritePre <buffer> :%s/\s\+$//e
 
@@ -262,8 +270,11 @@ Bundle 'bling/vim-airline'
 "Tabulation
 Bundle 'godlygeek/tabular'
 
+"LaTeX-Box
+Bundle 'LaTeX-Box-Team/LaTeX-Box'
+
 "Hex highlighing
-"undle 'skammer/vim-css-color'
+"Bundle 'skammer/vim-css-color'
 
 
 "CoffeeScript
