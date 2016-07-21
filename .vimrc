@@ -10,7 +10,7 @@ filetype plugin on
 filetype indent on
 "omnicomplete
 set omnifunc=syntaxcomplete#Complete
-let g:superTabDefaultCompletionType = "<c-n>"
+let g:SuperTabDefaultCompletionType = "<C-X><C-O>"
 "Make the pop up menu a resasonble height
 set pumheight=15
 
@@ -194,6 +194,9 @@ endfunction
 
 map <C-F5> :tab split<CR>:exec("make")<Bar> cw<CR>
 
+command! CopyFileToClipboard !xclip -i -selection c % 
+cnoreabbrev CopySelection w !xclip -i -selection c
+
 "--------------------
 "VUNDLE
 "--------------------
@@ -262,12 +265,21 @@ Bundle 'bling/vim-airline'
 "Tabulation
 Bundle 'godlygeek/tabular'
 
+"LaTeX-Box
+Bundle 'LaTeX-Box-Team/LaTeX-Box'
+
+"JSHint
+Bundle 'Shutnik/jshint2.vim'
+
 "Hex highlighing
 "undle 'skammer/vim-css-color'
 
 
 "CoffeeScript
 "Bundle 'kchmck/vim-coffee-script'
+
+"SonicPi
+Bundle 'dermusikman/sonicpi.vim'
 
 filetype on
 
@@ -286,7 +298,7 @@ map <C-F12> :!ctags -R --exclude=*/venv/* --sort=yes --c++-kinds=+p --python-kin
 "Find tags
 map <F12> :tab split<CR>:exec("tag ".expand("<cword>"))<CR>
 
-map <S-F12> :exec("grep! -R \'\\b".expand("<cword>")."\\b\' ./ --include=\*.{cpp,h,c,hpp}")<Bar> cw<CR> 
+map <S-F12> :exec("grep! -R \'\\b".expand("<cword>")."\\b\' ./ --include=\*.{cpp,h,c,hpp,cfg,def}")<Bar> cw<CR> 
 
 " Load syntastic conf
 map<C-F11> :! find -name '*.h' -printf '\%h\n' <bar> sort -u <bar> awk '{print "-I" $0}' > syntastic_conf<CR> :let g:syntastic_cpp_config_file = 'syntastic_conf'<CR>
