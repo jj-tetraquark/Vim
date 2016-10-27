@@ -83,6 +83,7 @@ nnoremap q :NERDTreeTabsToggle<CR>
 let g:syntastic_cpp_compiler_options = ' -std=c++11'
 let g:syntastic_cpp_config_file = 'syntastic_conf'
 let c_no_curly_error=1
+let g:syntastic_cpp_checkers = ['cpplint']
 
 "------------------------
 "Folding
@@ -104,6 +105,7 @@ nnoremap <F9> za
 onoremap <F9> <C-C>za
 vnoremap <F9> zf
 nnoremap <C-F9> zR
+nnoremap <leader><F9> zR
 nnoremap <M-F9> zM
 
 "Map recording to z instead of q
@@ -326,8 +328,9 @@ let OmniCpp_DefaultNamespaces = ["std", "_GLIBCXX_STD"]
 au CursorMovedI,InsertLeave * if pumvisible() == 0|silent! pclose|endif
 set completeopt=menuone,menu,longest,preview
 
+"--------
 "AVIM
-
+"--------
 " make h<->hpp work
 let g:alternateExtensions_hpp='c,cpp,h'
 let g:alternateExtensions_h='c,cpp,cxx,cc,CC,hpp'
@@ -335,3 +338,13 @@ let g:alternateExtensions_h='c,cpp,cxx,cc,CC,hpp'
 let g:alternateNoDefaultAlternate = 1
 let g:alternateRelativeFiles = 1 " make files relative to cwd
 let g:alternateSearchPath = "sfr:../source,sfr:../src,sfr:../include,sfr:../inc,sfr:../,sfr:src/"
+
+"----------
+" Makeshift
+"---------
+let g:makeshift_on_bufread = 0
+let g:makeshift_on_bufnewfile = 0
+let g:makeshift_on_bufenter = 0
+let g:makeshift_on_startup = 0
+let g:makeshift_use_pwd_first = 1
+
