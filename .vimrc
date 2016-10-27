@@ -218,70 +218,71 @@ set rtp+=~/.vim/bundle/vundle/
 call vundle#rc()
 
 "let Vundle manage Vundle
-Bundle 'gmarik/vundle'
+Plugin 'gmarik/vundle'
 
 "My Bundles:
 
 "Snipmate
-Bundle "MarcWeber/vim-addon-mw-utils"
-Bundle "tomtom/tlib_vim"
-Bundle "garbas/vim-snipmate"
+Plugin 'MarcWeber/vim-addon-mw-utils'
+Plugin 'tomtom/tlib_vim'
+Plugin 'garbas/vim-snipmate'
 
 "NERD Tree
-Bundle 'scrooloose/nerdtree'
-Bundle 'jistr/vim-nerdtree-tabs'
+Plugin 'scrooloose/nerdtree'
+Plugin 'jistr/vim-nerdtree-tabs'
 
 "The Silver Searcher
-Bundle 'rking/ag.vim'
+Plugin 'rking/ag.vim'
 
 "Sumblime style multiple-cursors
-Bundle 'terryma/vim-multiple-cursors'
+Plugin 'terryma/vim-multiple-cursors'
 
 "Supertab
-Bundle 'ervandew/supertab'
+Plugin 'ervandew/supertab'
 
 "OmniCppComplete
-Bundle 'vim-scripts/OmniCppComplete'
+Plugin 'vim-scripts/OmniCppComplete'
 
 "a.vim Alternate Files quickly
-Bundle 'vim-scripts/a.vim'
+Plugin 'vim-scripts/a.vim'
 
 "Ctrl-P fuzzy finding
-Bundle 'kien/ctrlp.vim'
+Plugin 'kien/ctrlp.vim'
 
 "Syntastic Syntax checking
-Bundle 'scrooloose/syntastic'
+Plugin 'scrooloose/syntastic'
 
 "MakeShift auto build detection
-Bundle 'johnsyweb/vim-makeshift'
+Plugin 'johnsyweb/vim-makeshift'
 
 "Git wrapper
-Bundle 'tpope/vim-fugitive'
+Plugin 'tpope/vim-fugitive'
 
 "Background tasks
-Bundle 'tpope/vim-dispatch'
+Plugin 'tpope/vim-dispatch'
 
 "Air-line
-Bundle 'bling/vim-airline'
+Plugin 'bling/vim-airline'
+Plugin 'vim-airline/vim-airline-themes'
 
 "Tabulation
-Bundle 'godlygeek/tabular'
+Plugin 'godlygeek/tabular'
 
 "LaTeX-Box
-Bundle 'LaTeX-Box-Team/LaTeX-Box'
+Plugin 'LaTeX-Box-Team/LaTeX-Box'
 
 "JSHint
-Bundle 'Shutnik/jshint2.vim'
+Plugin 'Shutnik/jshint2.vim'
 
 "Hex highlighing
 "undle 'skammer/vim-css-color'
 
 
 "CoffeeScript
-"Bundle 'kchmck/vim-coffee-script'
+"Plugin 'kchmck/vim-coffee-script'
 
 "SonicPi
-Bundle 'dermusikman/sonicpi.vim'
+Plugin 'dermusikman/sonicpi.vim'
 
 filetype on
 
