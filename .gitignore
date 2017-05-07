@@ -1,3 +1,5 @@
 vimfiles/.netrwhist
 vimfiles/bundle
 
+vimfiles/autoload/
+vimfiles/init.vim

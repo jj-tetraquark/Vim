@@ -1,6 +1,6 @@
-"--------------------------
-"General Stuff
-"-------------------------
+"================================================================================
+" General Stuff:
+"================================================================================
 
 "autoread when file is changed
 set autoread
@@ -8,9 +8,6 @@ set autoread
 "filetype plugin
 filetype plugin on
 filetype indent on
-"omnicomplete
-set omnifunc=syntaxcomplete#Complete
-let g:superTabDefaultCompletionType = "<c-n>"
 "Make the pop up menu a resasonble height
 set pumheight=15
 
@@ -30,9 +27,9 @@ set directory=~/.vimtmp
 set undofile
 set undodir=~/.vimtmp
 
-"------------
-"UI
-"------------
+"================================================================================
+" UI:
+"================================================================================
 
 "wildmenu
 set wildmenu
@@ -66,27 +63,23 @@ set magic
 set showmatch
 
 "line numbers
-"set number
 set relativenumber
+set number
 
 "Highlight the cursor line
 set cursorline
 
-"--------------
-"Plugin config
-"--------------
+vnoremap <leader>y "+y
+vnoremap <leader>p "+p
 
-"Bind NERDTree file explorer to q
-nnoremap q :NERDTreeTabsToggle<CR>
+nnoremap <leader>p "+p
 
 "C++11 is cool yo
-let g:syntastic_cpp_compiler_options = ' -std=c++11'
-let g:syntastic_cpp_config_file = 'syntastic_conf'
 let c_no_curly_error=1
 
-"------------------------
-"Folding
-"------------------------
+"================================================================================
+" Folding:
+"================================================================================
 "Set maximum numner of nested folds to 5
 set foldnestmax=5
 "Minimum number of lines folded
@@ -112,9 +105,9 @@ map [20;5~ <C-F9>
 "Map recording to z instead of q
 nnoremap z q
 
-"---------------------
-"Colours and fonts
-"---------------------
+"================================================================================
+" Colours And Fonts:
+"================================================================================
 "
 "Enable syntax highlighting
 syntax on
@@ -135,26 +128,10 @@ set t_Co=256
 "colors molokai
 colors darkai
 
-"Airline config
-set laststatus=2 "always on
-let g:airline_theme="zenburn"
 
-"Install powerline fonts if this doesn't work right
-if !exists('g:airline_symbols')
-    let g:airline_symbols = {}
-endif
-let g:airline_inactive_collapse=1
-let g:airline_left_sep = ''
-let g:airline_left_alt_sep = ''
-let g:airline_right_sep = ''
-let g:airline_symbols.branch = ''
-let g:airline_symbols.readonly = ''
-let g:airline_symbols.whitespace = 'Ξ'
-let g:airline_symbols.linenr = ''
-
-"--------------------
-"Tabs and shiz
-"--------------------
+"================================================================================
+" Tabs And Shiz:
+"================================================================================
 
 set expandtab
 set shiftwidth=4
@@ -175,9 +152,9 @@ set nowrap
 "Tabulate C++ declarations
 nnoremap <leader>= :Tabularize /\S\+;<CR>
 
-"--------------------
-" Misc mapping
-"--------------------
+"================================================================================
+" Misc Mapping:
+"================================================================================
 
 "Fat-finger syndrome
 command! Cn cn
@@ -202,91 +179,140 @@ endfunction
 
 map <C-F5> :tab split<CR>:exec("make")<Bar> cw<CR>
 
-"--------------------
-"VUNDLE
-"--------------------
-" Setting up Vundle - the vim plugin bundler
-let iCanHazVundle=1
-let vundle_readme=expand('~/.vim/bundle/vundle/README.md')
-if !filereadable(vundle_readme)
-    echo "Installing Vundle.."
-    echo ""
-    silent !mkdir -p ~/.vim/bundle
-    silent !git clone https://github.com/gmarik/vundle ~/.vim/bundle/vundle
-    let iCanHazVundle=0
+"================================================================================
+" Plugins:
+"================================================================================
+" Load vim-plug
+if empty(glob("~/.vim/autoload/plug.vim"))
+    execute '!mkdir -p ~/.vim/autoload'
+    execute '!curl -fLo ~/.vim/autoload/plug.vim https://raw.github.com/junegunn/vim-plug/master/plug.vim'
 endif
-filetype off
 
-set rtp+=~/.vim/bundle/vundle/
-call vundle#rc()
+call plug#begin('~/.local/share/nvim/plugged')
 
-"let Vundle manage Vundle
-Bundle 'gmarik/vundle'
+"--------------------------------------------------------------------------------
 
-"My Bundles:
+"NERD Tree:
+Plug 'scrooloose/nerdtree', { 'on': ['NERDTreeToggle', 'NERDTreeTabsToggle'] }
+Plug 'jistr/vim-nerdtree-tabs', { 'on': 'NERDTreeTabsToggle' }
+"Bind NERDTree file explorer to q
+nnoremap q :NERDTreeTabsToggle<CR>
 
-"Snipmate
-Bundle "MarcWeber/vim-addon-mw-utils"
-Bundle "tomtom/tlib_vim"
-Bundle "garbas/vim-snipmate"
-
-"NERD Tree
-Bundle 'scrooloose/nerdtree'
-Bundle 'jistr/vim-nerdtree-tabs'
-
-"The Silver Searcher
-Bundle 'rking/ag.vim'
-
+"--------------------------------------------------------------------------------
 "Sumblime style multiple-cursors
-Bundle 'terryma/vim-multiple-cursors'
+Plug 'terryma/vim-multiple-cursors'
+ 
+"--------------------------------------------------------------------------------
+"Avim Alternate Files Quickly:
+Plug 'vim-scripts/a.vim', { 'for' : ['c', 'cpp'] }
+" make h<->hpp work
+let g:alternateExtensions_hpp='c,cpp,h'
+let g:alternateExtensions_h='c,cpp,cxx,cc,CC,hpp'
+" stop auto-creating files if they don't exist
+let g:alternateNoDefaultAlternate = 1
+let g:alternateRelativeFiles = 1 " make files relative to cwd
+let g:alternateSearchPath = "sfr:../source,sfr:../src,sfr:../include,sfr:../inc,sfr:../,sfr:src/"
 
-"Supertab
-Bundle 'ervandew/supertab'
+"--------------------------------------------------------------------------------
+"CtrlP Fuzzy Search:
+Plug 'kien/ctrlp.vim'
+ 
+"--------------------------------------------------------------------------------
+"MakeShift:
+Plug 'johnsyweb/vim-makeshift'
 
-"OmniCppComplete
-Bundle 'vim-scripts/OmniCppComplete'
+"--------------------------------------------------------------------------------
+"Neomake:
+Plug 'neomake/neomake'
 
-"a.vim Alternate Files quickly
-Bundle 'vim-scripts/a.vim'
+let g:neomake_cpp_enabled_makers = ['gcc']
 
-"Ctrl-P fuzzy finding
-Bundle 'kien/ctrlp.vim'
+autocmd! BufWritePost * Neomake
 
-"Syntastic Syntax checking
-Bundle 'scrooloose/syntastic'
+"--------------------------------------------------------------------------------
+"NeoComplete:
+Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+Plug 'Shougo/neoinclude.vim', { 'do': ':UpdateRemotePlugins' }
+Plug 'zchee/deoplete-clang', { 'for' : ['cpp', 'c'], 'do' : ':UpdateRemotePlugins' }
+Plug 'zchee/deoplete-jedi', { 'for' : 'python', 'do' : ':UpdateRemotePlugins' }
+let g:deoplete#enable_at_startup = 1
+inoremap <expr><tab> pumvisible() ? "\<c-n>" : "\<tab>"
+"TODO - Make this work in macos 'locate libclang.dylib'
+"let libclang=system('find /usr/lib -name libclang.so*')
+let g:deoplete#sources#clang#libclang_path = '/usr/lib/llvm-3.8/lib/libclang-3.8.so.1'
+let g:deoplete#sources#clang#clang_header = '/usr/lib/clang'
 
-"MakeShift auto build detection
-Bundle 'johnsyweb/vim-makeshift'
+"--------------------------------------------------------------------------------
+"NeoSnippet:
+Plug 'Shougo/neosnippet'
+imap <C-k>     <Plug>(neosnippet_expand_or_jump)
+smap <C-k>     <Plug>(neosnippet_expand_or_jump)
+xmap <C-k>     <Plug>(neosnippet_expand_target)
+" load regualr snippets
+let g:neosnippet#disable_runtime_snippets = { '_' : 1 }
+let g:neosnippet#enable_snipmate_compatibility = 1
+let g:neosnippet#snippets_directory='~/.vim/snippets/'
 
-"Git wrapper
-Bundle 'tpope/vim-fugitive'
+" SuperTab like snippets behavior.
+" Note: It must be "imap" and "smap".  It uses <Plug> mappings.
+imap <C-k>     <Plug>(neosnippet_expand_or_jump)
+smap <expr><TAB> neosnippet#expandable_or_jumpable() ?
+\ "\<Plug>(neosnippet_expand_or_jump)" : "\<TAB>"
 
-"Background tasks
-Bundle 'tpope/vim-dispatch'
+" Conceal the markers
+if has('conceal')
+  set conceallevel=2 concealcursor=niv
+endif
 
-"Air-line
-Bundle 'bling/vim-airline'
+"--------------------------------------------------------------------------------
+"Git Wrapper:
+Plug 'tpope/vim-fugitive'
+ 
+"--------------------------------------------------------------------------------
+"Background Tasks:
+Plug 'tpope/vim-dispatch'
 
-"Tabulation
-Bundle 'godlygeek/tabular'
+"--------------------------------------------------------------------------------
+"Comment Stuff:
+Plug 'tpope/vim-commentary'
+ 
+"--------------------------------------------------------------------------------
+"Airline:
+Plug 'bling/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
+ 
+set laststatus=2 "always on
+let g:airline_theme="zenburn"
 
-"LaTeX-Box
-Bundle 'LaTeX-Box-Team/LaTeX-Box'
+"Install powerline fonts if this doesn't work right
+if !exists('g:airline_symbols')
+    let g:airline_symbols = {}
+endif
+let g:airline_inactive_collapse=1
+let g:airline_left_sep = ''
+let g:airline_left_alt_sep = ''
+let g:airline_right_sep = ''
+let g:airline_symbols.branch = ''
+let g:airline_symbols.readonly = ''
+let g:airline_symbols.whitespace = 'Ξ'
+let g:airline_symbols.linenr = ''
 
-"Hex highlighing
-"Bundle 'skammer/vim-css-color'
+"--------------------------------------------------------------------------------
+"Tabulation:
+Plug 'godlygeek/tabular'
 
-
-"CoffeeScript
-"Bundle 'kchmck/vim-coffee-script'
+"--------------------------------------------------------------------------------
+"LaTeX:
+Plug 'LaTeX-Box-Team/LaTeX-Box', { 'for' : 'tex' }
+ 
+call plug#end()
 
 filetype on
 
 
-
-"--------
-"CTAGS
-"--------
+"================================================================================
+" CTAGS:
+"================================================================================
 
 " configure tags - add additional tags here or comment out not-used ones
 au BufNewFile,BufRead *.cpp,*.h,*.hpp,*.c set tags+=~/.vim/tags/cpp
@@ -299,9 +325,6 @@ map <F12> :tab split<CR>:exec("tag ".expand("<cword>"))<CR>
 
 map <S-F12> :exec("grep! -R \'\\b".expand("<cword>")."\\b\' ./ --include=\*.{cpp,h,c,hpp}")<Bar> cw<CR> 
 
-" Load syntastic conf
-map<C-F11> :! find -name '*.h' -printf '\%h\n' <bar> sort -u <bar> awk '{print "-I" $0}' > syntastic_conf<CR> :let g:syntastic_cpp_config_file = 'syntastic_conf'<CR>
-
 "tmux bindings
 map [24;2~ <S-F12>
 map [24;5~ <C-F12>
@@ -311,26 +334,19 @@ nnoremap } :pop<CR>
 
 nnoremap <leader>] :ptag<CR>
 
-
-" OmniCppComplete
-let OmniCpp_NamespaceSearch = 1
-let OmniCpp_GlobalScopeSearch = 1
-let OmniCpp_ShowAccess = 1
-let OmniCpp_ShowPrototypeInAbbr = 1 " show function parameters
-let OmniCpp_MayCompleteDot = 1 " autocomplete after .
-let OmniCpp_MayCompleteArrow = 1 " autocomplete after ->
-let OmniCpp_MayCompleteScope = 1 " autocomplete after ::
-let OmniCpp_DefaultNamespaces = ["std", "_GLIBCXX_STD"]
 " automatically open and close the popup menu / preview window
 au CursorMovedI,InsertLeave * if pumvisible() == 0|silent! pclose|endif
-set completeopt=menuone,menu,longest,preview
 
-"AVIM
-
-" make h<->hpp work
-let g:alternateExtensions_hpp='c,cpp,h'
-let g:alternateExtensions_h='c,cpp,cxx,cc,CC,hpp'
-" stop auto-creating files if they don't exist
-let g:alternateNoDefaultAlternate = 1
-let g:alternateRelativeFiles = 1 " make files relative to cwd
-let g:alternateSearchPath = "sfr:../source,sfr:../src,sfr:../include,sfr:../inc,sfr:../,sfr:src/"
+"================================================================================
+" ROS:
+"================================================================================ 
+if !empty(glob(".catkin_workspace"))
+    let rosversion=systemlist('rosversion -d')[0]
+    let g:neomake_cpp_ros_maker = {
+    \ 'exe' : 'g++',
+    \ 'args' : ['-Wall', '-Wpedantic', '-Wextra', '-fsyntax-only', '-I/opt/ros/'.rosversion.'/include']
+    \}
+    let g:neomake_cpp_enabled_makers = ['ros']
+    let g:deoplete#sources#clang#flags = ['-I/opt/ros'.rosversion.'/include'] 
+    set makeprg=catkin_make
+endif
