@@ -90,6 +90,7 @@ augroup vimrc
   au BufReadPre * setlocal foldmethod=syntax
   au BufWinEnter * if &fdm == 'syntax' | setlocal foldmethod=manual | endif
 augroup END
+set nofoldenable "don't fold on open
 
 "Set opening and closing folds to F9
 inoremap <F9> <C-O>za
@@ -102,8 +103,8 @@ nnoremap <M-F9> zM
 "tmux
 map [20;5~ <C-F9>
 
-"Map recording to z instead of q
-nnoremap z q
+"Map recording to m instead of q
+nnoremap m q
 
 "================================================================================
 " Colours And Fonts:
@@ -222,10 +223,57 @@ Plug 'kien/ctrlp.vim'
 Plug 'johnsyweb/vim-makeshift'
 
 "--------------------------------------------------------------------------------
+"Rtags:
+Plug 'lyuts/vim-rtags', { 'for': ['c', 'cpp'] }
+let g:rtagsAutoLaunchRdm = 1
+
+let g:rtagsConfigured = 0
+function! ConfigureRtags(force)
+    if(!g:rtagsConfigured || a:force)
+        if exists('g:rtagsRcCmd') 
+            let compilation_database = system('find -name compile_commands.json') 
+            if !empty(compilation_database)
+                " configure rtags server
+                silent exec ':!rc -J '.compilation_database
+                " configure deoplete-clang
+                let g:build_dir = systemlist('dirname '.compilation_database)[0]
+                if empty(glob(".clang"))
+                    let l:clang_conf = 'compilation_database = \"'.g:build_dir.'\"'
+                    silent exec ':!echo '.l:clang_conf.' > .clang'
+                    call plug#load('deoplete.nvim')
+                endif
+            else
+                echom "Couldn't find a compile_commands.json compilation database"
+            endif
+        else
+            echom "vim-rtags is not running"
+        endif
+    endif
+    let g:rtagsConfigured = 1 
+endfunction
+
+" Use rtags to follow but fall back to ctags if not indexed
+function! FollowTag()
+    redir => l:output
+    call rtags#SymbolInfo()
+    redir END
+    if l:output =~ '^Not indexed'
+        exec "tag ".expand("<cword>")
+    else
+        call rtags#JumpTo(g:SAME_WINDOW)
+    endif
+endfunction
+
+
+nnoremap <c-]> :call FollowTag()<CR>
+
+
+"--------------------------------------------------------------------------------
 "Neomake:
 Plug 'neomake/neomake'
 
 let g:neomake_cpp_enabled_makers = ['gcc']
+let g:neomake_cpp_gcc_args = ['-std=c++11', '-Wall', '-Wextra', '-fsyntax-only']
 
 autocmd! BufWritePost * Neomake
 
@@ -305,9 +353,13 @@ Plug 'godlygeek/tabular'
 "LaTeX:
 Plug 'LaTeX-Box-Team/LaTeX-Box', { 'for' : 'tex' }
  
+"================================================================================
 call plug#end()
 
+au BufNewFile,BufRead *.cpp,*.h,*.hpp,*.c call ConfigureRtags(0)
+
 filetype on
+
 
 
 "================================================================================
@@ -319,7 +371,7 @@ au BufNewFile,BufRead *.cpp,*.h,*.hpp,*.c set tags+=~/.vim/tags/cpp
 au BufNewFile,BufRead *.cpp,*.h,*.hpp,*.c set tags+=~/.vim/tags/qt4
 au BufNewFile,BufRead *.py set tags+=~/.vim/tags/python
 " build tags of your own project with Ctrl-F12
-map <C-F12> :!ctags -R --exclude=*/venv/* --sort=yes --c++-kinds=+p --python-kinds=-i --fields=+iaS --extra=+q --languages=-javascript,tex .<CR>
+map <C-F12> :!ctags -R --exclude=*/venv/* --sort=yes --c++-kinds=+p --python-kinds=-i --fields=+iaS --extras=+q --languages=-javascript,tex .<CR>
 "Find tags
 map <F12> :tab split<CR>:exec("tag ".expand("<cword>"))<CR>
 
@@ -346,7 +398,14 @@ if !empty(glob(".catkin_workspace"))
     \ 'exe' : 'g++',
     \ 'args' : ['-Wall', '-Wpedantic', '-Wextra', '-fsyntax-only', '-I/opt/ros/'.rosversion.'/include']
     \}
-    let g:neomake_cpp_enabled_makers = ['ros']
-    let g:deoplete#sources#clang#flags = ['-I/opt/ros'.rosversion.'/include'] 
-    set makeprg=catkin_make
+    let compilation_database = system('find -name compile_commands.json') 
+    let build_dir = systemlist('dirname '.compilation_database)[0]
+    let g:neomake_cpp_clangcheck_maker = {
+    \ 'exe' : 'clang-check',
+    \ 'args' : ['-p', build_dir ]
+    \}
+    let g:neomake_cpp_enabled_makers = ['clangcheck']
+    set makeprg=catkin_make\ -DCMAKE_EXPORT_COMPILE_COMMANDS=1
 endif
+
+
