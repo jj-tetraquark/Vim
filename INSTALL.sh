@@ -25,4 +25,10 @@ nvim -c "PlugInstall"
 echo "Alias nvim to vim"
 echo "alias vim=nvim" >> ~/.bashrc
 
+echo setting up fonts...
+git clone https://github.com/powerline/fonts.git
+cd fonts
+chmod +x install.sh
+bash install.sh
+
 echo "Done! (Remember to source your bashrc file)"
