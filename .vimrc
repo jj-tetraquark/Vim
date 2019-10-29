@@ -183,6 +183,10 @@ map <C-F5> :tab split<CR>:exec("make")<Bar> cw<CR>
 "================================================================================
 " Plugins:
 "================================================================================
+
+let g:python_host_prog = '/home/jj/.vimgit/Vim/neovim-venv/bin/python2'
+let g:python3_host_prog = '/home/jj/.vimgit/Vim/neovim-venv3/bin/python3'
+
 " Load vim-plug
 if empty(glob("~/.vim/autoload/plug.vim"))
     execute '!mkdir -p ~/.vim/autoload'
@@ -264,8 +268,40 @@ function! FollowTag()
     endif
 endfunction
 
+autocmd FileType cpp nnoremap <c-]> :call FollowTag()<CR>
 
-nnoremap <c-]> :call FollowTag()<CR>
+
+"--------------------------------------------------------------------------------
+"OmniSharp:
+Plug 'OmniSharp/omnisharp-vim', { 'for' : 'cs', 'do' : 'UpdateRemotePlugins' }
+let g:OmniSharp_server_stdio = 1
+"let g:OmniSharp_want_snippet = 1
+let g:OmniSharp_selector_ui = 'ctrlp'
+"let g:OmniSharp_highlight_types = 2
+set completeopt-=preview
+
+augroup omnisharp_commands
+    autocmd!
+
+    " Show type information automatically when the cursor stops moving
+    autocmd CursorHold *.cs call OmniSharp#TypeLookupWithoutDocumentation()
+
+    " The following commands are contextual, based on the cursor position.
+    autocmd FileType cs nnoremap <buffer> <c-]> :OmniSharpGotoDefinition<CR>
+    autocmd FileType cs nnoremap <buffer> <Leader>fi :OmniSharpFindImplementations<CR>
+    autocmd FileType cs nnoremap <buffer> <Leader>fs :OmniSharpFindSymbol<CR>
+    autocmd FileType cs nnoremap <buffer> <Leader>fu :OmniSharpFindUsages<CR>
+
+    " Finds members in the current buffer
+    autocmd FileType cs nnoremap <buffer> <Leader>fm :OmniSharpFindMembers<CR>
+
+    autocmd FileType cs nnoremap <buffer> <Leader>fx :OmniSharpFixUsings<CR>
+    autocmd FileType cs nnoremap <buffer> <Leader>tt :OmniSharpTypeLookup<CR>
+    autocmd FileType cs nnoremap <buffer> <Leader>dc :OmniSharpDocumentation<CR>
+
+    " Find all code errors/warnings for the current solution and populate the quickfix window
+    autocmd FileType cs nnoremap <buffer> <Leader>cc :OmniSharpGlobalCodeCheck<CR>
+augroup END
 
 
 "--------------------------------------------------------------------------------
@@ -283,12 +319,16 @@ Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 Plug 'Shougo/neoinclude.vim', { 'do': ':UpdateRemotePlugins' }
 Plug 'zchee/deoplete-clang', { 'for' : ['cpp', 'c'], 'do' : ':UpdateRemotePlugins' }
 Plug 'zchee/deoplete-jedi', { 'for' : 'python', 'do' : ':UpdateRemotePlugins' }
+
+
+
 let g:deoplete#enable_at_startup = 1
 inoremap <expr><tab> pumvisible() ? "\<c-n>" : "\<tab>"
 "TODO - Make this work in macos 'locate libclang.dylib'
 "let libclang=system('find /usr/lib -name libclang.so*')
 let g:deoplete#sources#clang#libclang_path = '/usr/lib/llvm-3.8/lib/libclang-3.8.so.1'
 let g:deoplete#sources#clang#clang_header = '/usr/lib/clang'
+
 
 "--------------------------------------------------------------------------------
 "NeoSnippet:
@@ -311,6 +351,10 @@ smap <expr><TAB> neosnippet#expandable_or_jumpable() ?
 if has('conceal')
   set conceallevel=2 concealcursor=niv
 endif
+
+""--------------------------------------------------------------------------------
+""UltiSnips:
+"Plug 'SirVer/ultisnips'
 
 "--------------------------------------------------------------------------------
 "Git Wrapper:
@@ -357,6 +401,11 @@ Plug 'LaTeX-Box-Team/LaTeX-Box', { 'for' : 'tex' }
 call plug#end()
 
 au BufNewFile,BufRead *.cpp,*.h,*.hpp,*.c call ConfigureRtags(0)
+
+"autocmd FileType cs call deoplete#enable_logging('DEBUG', 'deoplete.log')
+"#call deoplete#custom#option('sources', { 
+"#    \ '_' : ['file', 'buffer'],
+"#    \ 'cs': ['omni'] })
 
 filetype on
 
