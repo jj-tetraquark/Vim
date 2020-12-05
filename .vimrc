@@ -257,14 +257,19 @@ function! ConfigureRtags(force)
 endfunction
 
 " Use rtags to follow but fall back to ctags if not indexed
+let g:enableRtags = 1
 function! FollowTag()
-    redir => l:output
-    call rtags#SymbolInfo()
-    redir END
-    if l:output =~ '^Not indexed'
+    if !g:enableRtags
         exec "tag ".expand("<cword>")
     else
-        call rtags#JumpTo(g:SAME_WINDOW)
+      redir => l:output
+      call rtags#SymbolInfo()
+      redir END
+      if l:output =~ '^Not indexed' || empty(l:output)
+          exec "tag ".expand("<cword>")
+      else
+          call rtags#JumpTo(g:SAME_WINDOW)
+      endif
     endif
 endfunction
 
@@ -326,7 +331,7 @@ let g:deoplete#enable_at_startup = 1
 inoremap <expr><tab> pumvisible() ? "\<c-n>" : "\<tab>"
 "TODO - Make this work in macos 'locate libclang.dylib'
 "let libclang=system('find /usr/lib -name libclang.so*')
-let g:deoplete#sources#clang#libclang_path = '/usr/lib/llvm-3.8/lib/libclang-3.8.so.1'
+let g:deoplete#sources#clang#libclang_path = '/usr/lib/llvm-10/lib/libclang-10.so'
 let g:deoplete#sources#clang#clang_header = '/usr/lib/clang'
 
 
@@ -420,7 +425,7 @@ au BufNewFile,BufRead *.cpp,*.h,*.hpp,*.c set tags+=~/.vim/tags/cpp
 au BufNewFile,BufRead *.cpp,*.h,*.hpp,*.c set tags+=~/.vim/tags/qt4
 au BufNewFile,BufRead *.py set tags+=~/.vim/tags/python
 " build tags of your own project with Ctrl-F12
-map <C-F12> :!ctags -R --exclude=*/venv/* --sort=yes --c++-kinds=+p --python-kinds=-i --fields=+iaS --extras=+q --languages=-javascript,tex .<CR>
+map <C-F12> :!ctags -R --exclude=*/venv/* --sort=yes --c++-kinds=+p --python-kinds=-i --fields=+iaS .<CR>
 "Find tags
 map <F12> :tab split<CR>:exec("tag ".expand("<cword>"))<CR>
 
