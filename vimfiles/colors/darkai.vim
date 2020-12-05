@@ -142,12 +142,19 @@ if &t_Co > 255
    hi Ignore          ctermfg=244 ctermbg=233
    hi IncSearch       ctermfg=193 ctermbg=16
 
+if has("spell")
+    hi SpellBad    ctermfg=197 ctermbg=52 
+    hi SpellCap    ctermfg=97 cterm=underline
+    hi SpellLocal  ctermfg=105 gui=underline
+    hi SpellRare   ctermfg=254 gui=underline
+endif
+
    hi Keyword         ctermfg=166               cterm=bold
    hi Label           ctermfg=229               cterm=underline
    hi Macro           ctermfg=193
    hi SpecialKey      ctermfg=81
 
-   hi MatchParen      ctermfg=16  ctermbg=221 cterm=bold
+   hi MatchParen      cterm=NONE,bold
    hi ModeMsg         ctermfg=229
    hi MoreMsg         ctermfg=229
    hi Operator        ctermfg=166
@@ -203,4 +210,10 @@ if &t_Co > 255
 
    hi htmlTagName     ctermfg=252 
    hi htmlEndTag      ctermfg=71 cterm=bold
+
+   hi NeomakeErrorSign ctermfg=196
+   hi NeomakeWarning   ctermbg=58
+   hi NeomakeInfo      ctermbg=23
+
+   hi rustKeyword ctermfg=131
 end
