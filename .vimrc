@@ -143,7 +143,7 @@ set smarttab
 nnoremap <C-t>  :tabnew<CR>
 inoremap <C-t> <Esc>:tabnew<CR>i
 nnoremap <Tab> :tabnext<CR>
-nnoremap ` :tabprev<CR>
+nnoremap <S-Tab> :tabprev<CR>
 nnoremap tc :tabclose<CR>
 
 set autoindent "Auto indent
