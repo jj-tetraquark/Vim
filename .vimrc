@@ -275,6 +275,18 @@ endfunction
 
 autocmd FileType cpp nnoremap <c-]> :call FollowTag()<CR>
 
+" The Silver Searcher
+if executable('ag')
+  " Use ag over grep
+  set grepprg=ag\ --nogroup\ --nocolor
+
+  " Use ag in CtrlP for listing files. Lightning fast and respects .gitignore
+  let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
+
+  " ag is fast enough that CtrlP doesn't need to cache
+  let g:ctrlp_use_caching = 0
+endif
+
 
 "--------------------------------------------------------------------------------
 "OmniSharp:
@@ -282,7 +294,7 @@ Plug 'OmniSharp/omnisharp-vim', { 'for' : 'cs', 'do' : 'UpdateRemotePlugins' }
 let g:OmniSharp_server_stdio = 1
 "let g:OmniSharp_want_snippet = 1
 let g:OmniSharp_selector_ui = 'ctrlp'
-"let g:OmniSharp_highlight_types = 2
+let g:OmniSharp_highlighting = 0
 set completeopt-=preview
 
 augroup omnisharp_commands
@@ -429,7 +441,7 @@ map <C-F12> :!ctags -R --exclude=*/venv/* --sort=yes --c++-kinds=+p --python-kin
 "Find tags
 map <F12> :tab split<CR>:exec("tag ".expand("<cword>"))<CR>
 
-map <S-F12> :exec("grep! -R \'\\b".expand("<cword>")."\\b\' ./ --include=\*.{cpp,h,c,hpp}")<Bar> cw<CR> 
+map <S-F12> :exec("grep! \'\\b".expand("<cword>")."\\b\' ./")<Bar> cw<CR>
 
 "tmux bindings
 map [24;2~ <S-F12>
