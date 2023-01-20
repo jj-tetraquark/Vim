@@ -69,6 +69,9 @@ set number
 "Highlight the cursor line
 set cursorline
 
+"Don't hide things
+set conceallevel=0
+
 vnoremap <leader>y "+y
 vnoremap <leader>p "+p
 
@@ -135,8 +138,8 @@ colors darkai
 "================================================================================
 
 set expandtab
-set shiftwidth=4
-set tabstop=4
+set shiftwidth=2
+set tabstop=2
 set smarttab
 
 " And the other kind of tabs
@@ -184,8 +187,8 @@ map <C-F5> :tab split<CR>:exec("make")<Bar> cw<CR>
 " Plugins:
 "================================================================================
 
-let g:python_host_prog = '/home/jj/.vimgit/Vim/neovim-venv/bin/python2'
-let g:python3_host_prog = '/home/jj/.vimgit/Vim/neovim-venv3/bin/python3'
+let g:python_host_prog = '/home/jj/.vimgit/Vim/nvim-python2/bin/python2'
+let g:python3_host_prog = '/home/jj/.vimgit/Vim/nvim-python3/bin/python3'
 
 " Load vim-plug
 if empty(glob("~/.vim/autoload/plug.vim"))
@@ -220,7 +223,7 @@ let g:alternateSearchPath = "sfr:../source,sfr:../src,sfr:../include,sfr:../inc,
 
 "--------------------------------------------------------------------------------
 "CtrlP Fuzzy Search:
-Plug 'kien/ctrlp.vim'
+Plug 'ctrlpvim/ctrlp.vim'
  
 "--------------------------------------------------------------------------------
 "MakeShift:
@@ -265,7 +268,7 @@ function! FollowTag()
       redir => l:output
       call rtags#SymbolInfo()
       redir END
-      if l:output =~ '^Not indexed' || empty(l:output)
+      if l:output =~ '^Not indexed' "|| empty(l:output)
           exec "tag ".expand("<cword>")
       else
           call rtags#JumpTo(g:SAME_WINDOW)
@@ -301,13 +304,13 @@ augroup omnisharp_commands
     autocmd!
 
     " Show type information automatically when the cursor stops moving
-    autocmd CursorHold *.cs call OmniSharp#TypeLookupWithoutDocumentation()
+    autocmd CursorHold *.cs call OmniSharpTypeLookup
 
     " The following commands are contextual, based on the cursor position.
-    autocmd FileType cs nnoremap <buffer> <c-]> :OmniSharpGotoDefinition<CR>
+    autocmd FileType cs nnoremap <buffer> <c-]> <Plug>(omnisharp_navigate_down)
     autocmd FileType cs nnoremap <buffer> <Leader>fi :OmniSharpFindImplementations<CR>
     autocmd FileType cs nnoremap <buffer> <Leader>fs :OmniSharpFindSymbol<CR>
-    autocmd FileType cs nnoremap <buffer> <Leader>fu :OmniSharpFindUsages<CR>
+    autocmd FileType cs nnoremap <buffer> <Leader>fu <Plug>(omnisharp_find_usages)
 
     " Finds members in the current buffer
     autocmd FileType cs nnoremap <buffer> <Leader>fm :OmniSharpFindMembers<CR>
@@ -389,6 +392,11 @@ Plug 'tpope/vim-commentary'
 "Airline:
 Plug 'bling/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
+
+"--------------------------------------------------------------------------------
+"Tagbar:
+Plug 'preservim/tagbar'
+nnoremap ] :TagbarToggle<CR>
  
 set laststatus=2 "always on
 let g:airline_theme="zenburn"
@@ -441,7 +449,7 @@ map <C-F12> :!ctags -R --exclude=*/venv/* --sort=yes --c++-kinds=+p --python-kin
 "Find tags
 map <F12> :tab split<CR>:exec("tag ".expand("<cword>"))<CR>
 
-map <S-F12> :exec("grep! \'\\b".expand("<cword>")."\\b\' ./")<Bar> cw<CR>
+map <S-F12> :exec("grep! \'\\b".expand("<cword>")."\\b\' ./ --ignore tags")<Bar> cw<CR>
 
 "tmux bindings
 map [24;2~ <S-F12>
