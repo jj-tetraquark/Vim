@@ -1,12 +1,10 @@
 " Vim color file
 "
-" Author: Jonathan Dark <jonny@jonnydark.com>
+" Author: Juno Dark <jj@tetraquark.xyz>
 " Note: Based on the molokai theme for Vim by
 " Tomas Restrepo with elements of zenburn and
 " flatland.
-" Currently only a terminal theme, GUI needs doing at some point
 "
-
 hi clear
 
 set background=dark
@@ -20,94 +18,92 @@ if version > 580
 endif
 let g:colors_name="darkai"
 
-let s:molokai_original = 0
+hi Boolean         guifg=#5F87AF
+hi Character       guifg=#FFD7AF
+hi Number          guifg=#5F87AF
+hi String          guifg=#AFAF87
+hi Conditional     guifg=#D75F00               gui=bold
+hi Constant        guifg=#5F87AF               gui=bold
+hi Cursor          guifg=#000000 guibg=#DADADA
+hi Debug           guifg=#FFD7FF               gui=bold
+hi Define          guifg=#5FFF5F
+hi Delimiter       guifg=#626262
+hi DiffAdd                       guibg=#005F87
+hi DiffChange      guifg=#D7AFAF guibg=#4E4E4E
+hi DiffDelete      guifg=#D70087 guibg=#5F005F
+hi DiffText                      guibg=#878787 gui=italic,bold
 
-hi Boolean         guifg=#AE81FF
-hi Character       guifg=#F0DFAF
-hi Number          guifg=#AE81FF
-hi String          guifg=#F0DFAF
-hi Conditional     guifg=#FF9933               gui=bold
-hi Constant        guifg=#AE81FF               gui=bold
-hi Cursor          guifg=#000000 guibg=#F8F8F0
-hi Debug           guifg=#BCA3A3               gui=bold
-hi Define          guifg=#66D9EF
-hi Delimiter       guifg=#8F8F8F
-hi DiffAdd                       guibg=#13354A
-hi DiffChange      guifg=#89807D guibg=#4C4745
-hi DiffDelete      guifg=#960050 guibg=#1E0010
-hi DiffText                      guibg=#4C4745 gui=italic,bold
+hi Directory       guifg=#5FAF5F               gui=bold
+hi Error           guifg=#5F0000 guibg=#FF8700
+hi ErrorMsg        guifg=#FF00AF guibg=#000000 gui=bold
+hi Exception       guifg=#5FAF5F               gui=bold
+hi Float           guifg=#5F87AF
+hi FoldColumn      guifg=#5FAFAF guibg=#000000
+hi Folded          guifg=#5FAFAF guibg=#000000
+hi Function        guifg=#5FAF5F
+hi Identifier      guifg=#FFD75F
+hi Ignore          guifg=#808080 guibg=#121212
+hi IncSearch       guifg=#D7FFAF guibg=#000000
 
-hi Directory       guifg=#A6E22E               gui=bold
-hi Error           guifg=#960050 guibg=#1E0010
-hi ErrorMsg        guifg=#FF9933 guibg=#232526 gui=bold
-hi Exception       guifg=#A6E22E               gui=bold
-hi Float           guifg=#AE81FF
-hi FoldColumn      guifg=#465457 guibg=#000000
-hi Folded          guifg=#465457 guibg=#000000
-hi Function        guifg=#A6E22E
-hi Identifier      guifg=#FD971F
-hi Ignore          guifg=#808080 guibg=bg
-hi IncSearch       guifg=#C4BE89 guibg=#000000
+hi Keyword         guifg=#D75F00               gui=bold
+hi Label           guifg=#FFFFAF               gui=none
+hi Macro           guifg=#D7FFAF               gui=italic
+hi SpecialKey      guifg=#5FD7FF               gui=italic
 
-hi Keyword         guifg=#FF9933               gui=bold
-hi Label           guifg=#F0DFAF               gui=none
-hi Macro           guifg=#C4BE89               gui=italic
-hi SpecialKey      guifg=#66D9EF               gui=italic
-
-hi MatchParen      guifg=#000000 guibg=#FD971F gui=bold
-hi ModeMsg         guifg=#F0DFAF
-hi MoreMsg         guifg=#F0DFAF
-hi Operator        guifg=#FF9933
+hi MatchParen      guifg=#FFD75F guibg=#000000 gui=bold
+hi ModeMsg         guifg=#FFFFAF
+hi MoreMsg         guifg=#FFFFAF
+hi Operator        guifg=#D75F00
 
 " complete menu
-hi Pmenu           guifg=#66D9EF guibg=#000000
+hi Pmenu           guifg=#D0D0D0 guibg=#080808
 hi PmenuSel                      guibg=#808080
 hi PmenuSbar                     guibg=#080808
-hi PmenuThumb      guifg=#66D9EF
+hi PmenuThumb      guifg=#5FD7FF
 
-hi PreCondit       guifg=#A6E22E               gui=bold
-hi PreProc         guifg=#A6E22E
-hi Question        guifg=#66D9EF
-hi Repeat          guifg=#FF9933               gui=bold
-hi Search          guifg=#FFFFFF guibg=#455354
+hi PreCondit       guifg=#5FAF5F               gui=bold
+hi PreProc         guifg=#5FAF5F
+hi Question        guifg=#5FD7FF
+hi Repeat          guifg=#D75F00               gui=bold
+hi Search          guifg=#DADADA guibg=#5F8787
 " marks column
-hi SignColumn      guifg=#A6E22E guibg=#232526
-hi SpecialChar     guifg=#FF9933               gui=bold
-hi SpecialComment  guifg=#465457               gui=bold
-hi Special         guifg=#66D9EF guibg=bg      gui=italic
+hi SignColumn      guifg=#5FAF5F guibg=#262626
+hi SpecialChar     guifg=#FFD7AF               gui=bold
+hi SpecialComment  guifg=#8A8A8A               gui=bold
+hi Special         guifg=#5FD7FF guibg=#121212 gui=italic
 if has("spell")
-    hi SpellBad    guisp=#FF0000 gui=undercurl
-    hi SpellCap    guisp=#7070F0 gui=undercurl
-    hi SpellLocal  guisp=#70F0F0 gui=undercurl
-    hi SpellRare   guisp=#FFFFFF gui=undercurl
+    hi SpellBad    guisp=#FF005F gui=undercurl
+    hi SpellCap    guisp=#875FAF gui=undercurl
+    hi SpellLocal  guisp=#8787FF gui=undercurl
+    hi SpellRare   guisp=#E4E4E4 gui=undercurl
 endif
-hi Statement       guifg=#FF9933               gui=bold
-hi StatusLine      guifg=#455354 guibg=fg
+hi Statement       guifg=#AF5F5F               gui=none 
+hi StatusLine      guifg=#444444 guibg=#DADADA
 hi StatusLineNC    guifg=#808080 guibg=#080808
-hi StorageClass    guifg=#FD971F               gui=italic
-hi Structure       guifg=#66D9EF
-hi Tag             guifg=#FF9933               gui=italic
-hi Title           guifg=#ef5939
-hi Todo            guifg=#FFFFFF guibg=bg      gui=bold
+hi StorageClass    guifg=#FFD75F               gui=italic
+hi Structure       guifg=#5FAFAF
+hi Tag             guifg=#D75F00               gui=italic
+hi Title           guifg=#5F87AF
+hi Todo            guifg=#5F875F guibg=#121212 gui=bold
 
-hi Typedef         guifg=#66D9EF
-hi Type            guifg=#66D9EF               gui=none
+hi Typedef         guifg=#5FAFAF
+hi Type            guifg=#5FAFAF               gui=none
 hi Underlined      guifg=#808080               gui=underline
 
-hi VertSplit       guifg=#808080 guibg=#080808 gui=bold
-hi VisualNOS                     guibg=#403D3D
-hi Visual                        guibg=#403D3D
-hi WarningMsg      guifg=#FFFFFF guibg=#333333 gui=bold
-hi WildMenu        guifg=#66D9EF guibg=#000000
+hi VertSplit       guifg=#5F5F5F guibg=#080808 gui=bold
+hi VisualNOS                     guibg=#444444
+hi Visual                        guibg=#262626
+hi WarningMsg      guifg=#FFFFFF guibg=#444444 gui=bold
+hi WildMenu        guifg=#5FD7FF guibg=#000000
 
-hi Normal          guifg=#F8F8F2 guibg=#1B1D1E
-hi Comment         guifg=#465457
-hi CursorLine                    guibg=#293739
-hi CursorColumn                  guibg=#293739
-hi ColorColumn                   guibg=#232526
-hi LineNr          guifg=#465457 guibg=#232526
-hi NonText         guifg=#465457
-hi SpecialKey      guifg=#465457
+hi Normal          guifg=#D0D0D0 guibg=#121212
+hi Comment         guifg=#5F5F5F
+hi CursorLine                    guibg=#1C1C1C
+hi CursorColumn                  guibg=#1C1C1C
+hi ColorColumn                   guibg=#1C1C1C
+hi LineNr          guifg=#5F5F5F guibg=#080808
+hi NonText         guifg=#5F5F5F
+hi SpecialKey      guifg=#5F5F5F
 "
 " Support for 256-color terminal
 "
