@@ -20,12 +20,16 @@ set guioptions-=m  "remove menu bar
 set guioptions-=T  "remove toolbar
 set guioptions-=r  "remove right-hand scroll bar
 set guioptions-=l
+set termguicolors
 
 "Stop vim from leaving temp files everywhere
 set backupdir=~/.vimtmp
 set directory=~/.vimtmp
 set undofile
 set undodir=~/.vimtmp
+
+let g:loaded_netrw = 1 "disable builtin file explorer
+let g:loaded_netrwPlugin = 1
 
 "================================================================================
 " UI:
@@ -79,6 +83,9 @@ nnoremap <leader>p "+p
 
 "C++11 is cool yo
 let c_no_curly_error=1
+
+"disable all mouse support
+set mouse=
 
 "================================================================================
 " Folding:
@@ -138,8 +145,8 @@ colors darkai
 "================================================================================
 
 set expandtab
-set shiftwidth=2
-set tabstop=2
+set shiftwidth=4
+set tabstop=4
 set smarttab
 
 " And the other kind of tabs
@@ -187,10 +194,10 @@ map <C-F5> :tab split<CR>:exec("make")<Bar> cw<CR>
 " Plugins:
 "================================================================================
 
-let g:python_host_prog = '/home/jj/.vimgit/Vim/nvim-python2/bin/python2'
-let g:python3_host_prog = '/home/jj/.vimgit/Vim/nvim-python3/bin/python3'
+let g:python3_host_prog = '$HOME/.vimgit/Vim/nvim-python3/bin/python3'
 
 " Load vim-plug
+echo glob("~/.vim/autoload/plug.vim")
 if empty(glob("~/.vim/autoload/plug.vim"))
     execute '!mkdir -p ~/.vim/autoload'
     execute '!curl -fLo ~/.vim/autoload/plug.vim https://raw.github.com/junegunn/vim-plug/master/plug.vim'
@@ -200,15 +207,35 @@ call plug#begin('~/.local/share/nvim/plugged')
 
 "--------------------------------------------------------------------------------
 
-"NERD Tree:
-Plug 'scrooloose/nerdtree', { 'on': ['NERDTreeToggle', 'NERDTreeTabsToggle'] }
-Plug 'jistr/vim-nerdtree-tabs', { 'on': 'NERDTreeTabsToggle' }
-"Bind NERDTree file explorer to q
-nnoremap q :NERDTreeTabsToggle<CR>
+"Matchit:
+Plug 'https://github.com/adelarsq/vim-matchit'
+
+"Nvim Tree:
+Plug 'nvim-tree/nvim-web-devicons'
+Plug 'nvim-tree/nvim-tree.lua'
+
+function! NvimTreeToggleAll()
+   let current_tab = tabpagenr()
+   if g:nvim_tree_open
+      tabdo NvimTreeClose
+      let g:nvim_tree_open = 0
+   else
+      tabdo NvimTreeOpen
+      let g:nvim_tree_open = 1
+   endif
+   execute 'tabnext' current_tab
+endfunction
+let g:nvim_tree_open = 0
+if isdirectory(argv(0))
+   let g:nvim_tree_open = 1
+endif
+
+"Bind nvim-tree file explorer to q
+nnoremap q :call NvimTreeToggleAll()<CR>
 
 "--------------------------------------------------------------------------------
 "Sumblime style multiple-cursors
-Plug 'terryma/vim-multiple-cursors'
+Plug 'mg979/vim-visual-multi'
  
 "--------------------------------------------------------------------------------
 "Avim Alternate Files Quickly:
@@ -230,147 +257,16 @@ Plug 'ctrlpvim/ctrlp.vim'
 Plug 'johnsyweb/vim-makeshift'
 
 "--------------------------------------------------------------------------------
-"Rtags:
-Plug 'lyuts/vim-rtags', { 'for': ['c', 'cpp'] }
-let g:rtagsAutoLaunchRdm = 1
-
-let g:rtagsConfigured = 0
-function! ConfigureRtags(force)
-    if(!g:rtagsConfigured || a:force)
-        if exists('g:rtagsRcCmd') 
-            let compilation_database = system('find -name compile_commands.json') 
-            if !empty(compilation_database)
-                " configure rtags server
-                silent exec ':!rc -J '.compilation_database
-                " configure deoplete-clang
-                let g:build_dir = systemlist('dirname '.compilation_database)[0]
-                if empty(glob(".clang"))
-                    let l:clang_conf = 'compilation_database = \"'.g:build_dir.'\"'
-                    silent exec ':!echo '.l:clang_conf.' > .clang'
-                    call plug#load('deoplete.nvim')
-                endif
-            else
-                echom "Couldn't find a compile_commands.json compilation database"
-            endif
-        else
-            echom "vim-rtags is not running"
-        endif
-    endif
-    let g:rtagsConfigured = 1 
-endfunction
-
-" Use rtags to follow but fall back to ctags if not indexed
-let g:enableRtags = 1
-function! FollowTag()
-    if !g:enableRtags
-        exec "tag ".expand("<cword>")
-    else
-      redir => l:output
-      call rtags#SymbolInfo()
-      redir END
-      if l:output =~ '^Not indexed' "|| empty(l:output)
-          exec "tag ".expand("<cword>")
-      else
-          call rtags#JumpTo(g:SAME_WINDOW)
-      endif
-    endif
-endfunction
-
-autocmd FileType cpp nnoremap <c-]> :call FollowTag()<CR>
-
-" The Silver Searcher
-if executable('ag')
-  " Use ag over grep
-  set grepprg=ag\ --nogroup\ --nocolor
-
-  " Use ag in CtrlP for listing files. Lightning fast and respects .gitignore
-  let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
-
-  " ag is fast enough that CtrlP doesn't need to cache
-  let g:ctrlp_use_caching = 0
-endif
-
-
-"--------------------------------------------------------------------------------
-"OmniSharp:
-Plug 'OmniSharp/omnisharp-vim', { 'for' : 'cs', 'do' : 'UpdateRemotePlugins' }
-let g:OmniSharp_server_stdio = 1
-"let g:OmniSharp_want_snippet = 1
-let g:OmniSharp_selector_ui = 'ctrlp'
-let g:OmniSharp_highlighting = 0
-set completeopt-=preview
-
-augroup omnisharp_commands
-    autocmd!
-
-    " Show type information automatically when the cursor stops moving
-    autocmd CursorHold *.cs call OmniSharpTypeLookup
-
-    " The following commands are contextual, based on the cursor position.
-    autocmd FileType cs nnoremap <buffer> <c-]> <Plug>(omnisharp_navigate_down)
-    autocmd FileType cs nnoremap <buffer> <Leader>fi :OmniSharpFindImplementations<CR>
-    autocmd FileType cs nnoremap <buffer> <Leader>fs :OmniSharpFindSymbol<CR>
-    autocmd FileType cs nnoremap <buffer> <Leader>fu <Plug>(omnisharp_find_usages)
-
-    " Finds members in the current buffer
-    autocmd FileType cs nnoremap <buffer> <Leader>fm :OmniSharpFindMembers<CR>
-
-    autocmd FileType cs nnoremap <buffer> <Leader>fx :OmniSharpFixUsings<CR>
-    autocmd FileType cs nnoremap <buffer> <Leader>tt :OmniSharpTypeLookup<CR>
-    autocmd FileType cs nnoremap <buffer> <Leader>dc :OmniSharpDocumentation<CR>
-
-    " Find all code errors/warnings for the current solution and populate the quickfix window
-    autocmd FileType cs nnoremap <buffer> <Leader>cc :OmniSharpGlobalCodeCheck<CR>
-augroup END
-
-
-"--------------------------------------------------------------------------------
 "Neomake:
 Plug 'neomake/neomake'
 
 let g:neomake_cpp_enabled_makers = ['gcc']
-let g:neomake_cpp_gcc_args = ['-std=c++11', '-Wall', '-Wextra', '-fsyntax-only']
+let g:neomake_cpp_gcc_args = ['-std=c++14', '-Wall', '-Wextra', '-fsyntax-only']
 
 autocmd! BufWritePost * Neomake
 
-"--------------------------------------------------------------------------------
-"NeoComplete:
-Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-Plug 'Shougo/neoinclude.vim', { 'do': ':UpdateRemotePlugins' }
-Plug 'zchee/deoplete-clang', { 'for' : ['cpp', 'c'], 'do' : ':UpdateRemotePlugins' }
-Plug 'zchee/deoplete-jedi', { 'for' : 'python', 'do' : ':UpdateRemotePlugins' }
-
-
-
-let g:deoplete#enable_at_startup = 1
-inoremap <expr><tab> pumvisible() ? "\<c-n>" : "\<tab>"
-"TODO - Make this work in macos 'locate libclang.dylib'
-"let libclang=system('find /usr/lib -name libclang.so*')
-let g:deoplete#sources#clang#libclang_path = '/usr/lib/llvm-10/lib/libclang-10.so'
-let g:deoplete#sources#clang#clang_header = '/usr/lib/clang'
-
-
-"--------------------------------------------------------------------------------
-"NeoSnippet:
-Plug 'Shougo/neosnippet'
-imap <C-k>     <Plug>(neosnippet_expand_or_jump)
-smap <C-k>     <Plug>(neosnippet_expand_or_jump)
-xmap <C-k>     <Plug>(neosnippet_expand_target)
-" load regualr snippets
-let g:neosnippet#disable_runtime_snippets = { '_' : 1 }
-let g:neosnippet#enable_snipmate_compatibility = 1
-let g:neosnippet#snippets_directory='~/.vim/snippets/'
-
-" SuperTab like snippets behavior.
-" Note: It must be "imap" and "smap".  It uses <Plug> mappings.
-imap <C-k>     <Plug>(neosnippet_expand_or_jump)
-smap <expr><TAB> neosnippet#expandable_or_jumpable() ?
-\ "\<Plug>(neosnippet_expand_or_jump)" : "\<TAB>"
-
-" Conceal the markers
-if has('conceal')
-  set conceallevel=2 concealcursor=niv
-endif
+"Mason:
+Plug 'mason-org/mason.nvim'
 
 ""--------------------------------------------------------------------------------
 ""UltiSnips:
@@ -418,68 +314,154 @@ let g:airline_symbols.linenr = ''
 "Tabulation:
 Plug 'godlygeek/tabular'
 
-"--------------------------------------------------------------------------------
-"LaTeX:
-Plug 'LaTeX-Box-Team/LaTeX-Box', { 'for' : 'tex' }
- 
-"================================================================================
 call plug#end()
 
-au BufNewFile,BufRead *.cpp,*.h,*.hpp,*.c call ConfigureRtags(0)
+set completeopt=menuone,noselect,popup
 
-"autocmd FileType cs call deoplete#enable_logging('DEBUG', 'deoplete.log')
-"#call deoplete#custom#option('sources', { 
-"#    \ '_' : ['file', 'buffer'],
-"#    \ 'cs': ['omni'] })
+lua << EOF
+    local function nvim_tree_on_attach(bufnr)
+        local api = require "nvim-tree.api"
+        local function opts(desc)
+            return { desc = desc, buffer = bufnr, noremap = true, silent = true, nowait = true }
+        end
+
+
+        api.map.on_attach.default(bufnr)
+        vim.keymap.set("n", "<Tab>", "<cmd>tabnext<cr>", opts("next tab"))
+        vim.keymap.set("n", "<C-t>", "<cmd>tabnew<cr>", opts("new tab"))
+        vim.keymap.set("n", "t", api.node.open.tab, opts("Open: New Tab"))
+    end
+        
+    require("nvim-tree").setup({
+        open_on_tab=true,
+        on_attach=nvim_tree_on_attach
+    })
+    require("mason").setup()
+
+    -- configure language servers
+    -- Python
+    vim.lsp.config('ruff', {
+        cmd = {'ruff', 'server'},
+        filetypes = {'python'},
+        root_markers = {'pyprojects.toml', 'ruff.toml', '.ruff.toml', '.git'},
+    })
+    vim.lsp.config('pyright', { 
+        cmd = {'pyright-langserver', '--stdio'},
+        filetypes = {'python'},
+        root_markers = {
+            'pyrightconfig.json',
+            'pyproject.toml',
+            'setup.py',
+            'setup.cfg',
+            'requirements.txt',
+            'Pipfile',
+            '.git'
+        },
+        settings = {
+            python = {
+                pythonPath = vim.fn.exepath('python'),
+                analysis = {
+                    autoSearchPaths = true,
+                    useLibraryCodeForTypes = true,
+                    diagnosticMode = 'openFilesOnly',
+                    diagnosticSeverityOverrides = {
+                        reportAssignmentType = "information",
+                        reportRedeclaration = "information",
+                        reportIncompatibleMethodOverride = "warning",
+                        reportArgumentType = "warning",
+                    },
+                },
+            },
+        },
+    })
+
+    -- javascript
+    vim.lsp.config('quick-lint-js', {
+        cmd = {'quick-lint-js', '--lsp-server'},
+        filetypes = {'javascript', 'typescript'},
+        root_markers = {'package.json', 'jsconfig.json', '.git'}
+    })
+
+    -- C++
+    vim.lsp.config('clangd', {
+        cmd = {'clangd'},
+        filetypes = {'c', 'cpp', 'cuda'},
+        root_markers = {
+            '.clangd',
+            '.clang-tidy',
+            '.clang-format',
+            'compile_commands.json',
+            'compile_flags.txt',
+            'configure.ac',
+            '.git',
+        },
+        single_file_support = true,
+    })
+
+    vim.lsp.enable('ruff')
+    vim.lsp.enable('pyright')
+    vim.lsp.enable('quick-lint-js')
+    vim.lsp.enable('clangd')
+
+    -- Enable native LSP completion 
+    vim.api.nvim_create_autocmd('LspAttach', {
+    callback = function(args)
+            local client = vim.lsp.get_client_by_id(args.data.client_id)
+            if client and client:supports_method('textDocument/completion') then
+                vim.lsp.completion.enable(true, client.id, args.buf, { autotrigger = true })
+            end
+        end
+    })
+    vim.keymap.set('i', '<Tab>',   function() return vim.fn.pumvisible() == 1 and '<C-n>' or '<Tab>' end,   { expr = true })
+    vim.keymap.set('i', '<S-Tab>', function() return vim.fn.pumvisible() == 1 and '<C-p>' or '<S-Tab>' end, { expr = true })
+    vim.keymap.set('i', '<CR>',    function() return vim.fn.pumvisible() == 1 and '<C-y>' or '<CR>' end,    { expr = true })
+
+
+    -- show warnings inline
+    vim.diagnostic.config({
+        virtual_text = {
+            severity = {
+                min = vim.diagnostic.severity.ERROR,
+            }
+        },
+        signs = true,
+        underline = false
+    })
+
+    vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float)
+
+    vim.api.nvim_create_autocmd('CursorHold', {
+        callback = function()
+            local has_float = false
+            for _, win in ipairs(vim.api.nvim_list_wins()) do
+                if vim.api.nvim_win_get_config(win).relative ~= '' then
+                    has_float = true
+                    break
+                end
+            end
+            if not has_float then
+                vim.diagnostic.open_float(nil, { focus = false })
+            end
+        end
+    })
+    vim.opt.updatetime = 1000
+
+    local diagnostics_visible = true
+    vim.keymap.set('n', '<leader>d', function()
+        if diagnostics_visible then
+            vim.diagnostic.hide(nil, 0)
+            diagnostics_visible = false
+            print('Diagnostics hidden')
+        else
+            vim.diagnostic.show(nil, 0)
+            diagnostics_visible = true
+            print('Diagnostics shown')
+        end
+    end)
+
+EOF
 
 filetype on
 
-
-
-"================================================================================
-" CTAGS:
-"================================================================================
-
-" configure tags - add additional tags here or comment out not-used ones
-au BufNewFile,BufRead *.cpp,*.h,*.hpp,*.c set tags+=~/.vim/tags/cpp
-au BufNewFile,BufRead *.cpp,*.h,*.hpp,*.c set tags+=~/.vim/tags/qt4
-au BufNewFile,BufRead *.py set tags+=~/.vim/tags/python
-" build tags of your own project with Ctrl-F12
-map <C-F12> :!ctags -R --exclude=*/venv/* --sort=yes --c++-kinds=+p --python-kinds=-i --fields=+iaS .<CR>
-"Find tags
-map <F12> :tab split<CR>:exec("tag ".expand("<cword>"))<CR>
-
-map <S-F12> :exec("grep! \'\\b".expand("<cword>")."\\b\' ./ --ignore tags")<Bar> cw<CR>
-
-"tmux bindings
-map [24;2~ <S-F12>
-map [24;5~ <C-F12>
-map [23;5~ <C-F11>
-
-nnoremap } :pop<CR>
-
-nnoremap <leader>] :ptag<CR>
-
-" automatically open and close the popup menu / preview window
-au CursorMovedI,InsertLeave * if pumvisible() == 0|silent! pclose|endif
-
-"================================================================================
-" ROS:
-"================================================================================ 
-if !empty(glob(".catkin_workspace"))
-    let rosversion=systemlist('rosversion -d')[0]
-    let g:neomake_cpp_ros_maker = {
-    \ 'exe' : 'g++',
-    \ 'args' : ['-Wall', '-Wpedantic', '-Wextra', '-fsyntax-only', '-I/opt/ros/'.rosversion.'/include']
-    \}
-    let compilation_database = system('find -name compile_commands.json') 
-    let build_dir = systemlist('dirname '.compilation_database)[0]
-    let g:neomake_cpp_clangcheck_maker = {
-    \ 'exe' : 'clang-check',
-    \ 'args' : ['-p', build_dir ]
-    \}
-    let g:neomake_cpp_enabled_makers = ['clangcheck']
-    set makeprg=catkin_make\ -DCMAKE_EXPORT_COMPILE_COMMANDS=1
-endif
-
-
+autocmd QuickFixCmdPost grep copen
+nnoremap <S-F12> :grep! -r '\b<C-R>=expand("<cword>")<CR>\b' ./ --exclude=tags<CR>
